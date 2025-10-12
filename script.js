@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initTypingAnimation();
     initScrollAnimations();
     initSkillBars();
-    initCertificatesCarousel();
+    initCertificatesModal();
     initContactForm();
     initSmoothScrolling();
 });
@@ -167,43 +167,152 @@ function initSkillBars() {
     });
 }
 
-// Certificates carousel
-function initCertificatesCarousel() {
-    const slides = document.querySelectorAll('.certificate-slide');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentSlide = 0;
+// Certificates Modal functionality
+function initCertificatesModal() {
+    const modal = document.getElementById('certificateModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalYear = document.getElementById('modalYear');
+    const modalClose = document.getElementById('modalClose');
+    const modalPrev = document.getElementById('modalPrev');
+    const modalNext = document.getElementById('modalNext');
+    const modalOverlay = document.querySelector('.modal-overlay');
+    
+    const certificateCards = document.querySelectorAll('.certificate-card');
+    let currentCertificateIndex = 0;
+    
+    // Certificate data
+    const certificates = [
+        {
+            image: 'Certificates/ServiceNow_Administrator.jpg',
+            title: 'ServiceNow Certified System Administrator',
+            year: '2025'
+        },
+        {
+            image: 'Certificates/Power_BI.jpg',
+            title: 'Power BI Foundations',
+            year: '2024'
+        },
+        {
+            image: 'Certificates/Python.jpg',
+            title: 'Python for Everybody',
+            year: '2023'
+        }
+    ];
 
-    function showSlide(index) {
-        slides.forEach((slide, i) => {
-            slide.classList.remove('active', 'prev');
-            if (i === index) {
-                slide.classList.add('active');
-            } else if (i === (index - 1 + slides.length) % slides.length) {
-                slide.classList.add('prev');
+    function openModal(index) {
+        currentCertificateIndex = index;
+        const cert = certificates[index];
+        
+        modalImage.src = cert.image;
+        modalImage.alt = cert.title;
+        modalTitle.textContent = cert.title;
+        modalYear.textContent = cert.year;
+        
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Update navigation buttons visibility
+        updateNavigationButtons();
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function showNextCertificate() {
+        currentCertificateIndex = (currentCertificateIndex + 1) % certificates.length;
+        const cert = certificates[currentCertificateIndex];
+        
+        modalImage.src = cert.image;
+        modalImage.alt = cert.title;
+        modalTitle.textContent = cert.title;
+        modalYear.textContent = cert.year;
+        
+        updateNavigationButtons();
+    }
+
+    function showPrevCertificate() {
+        currentCertificateIndex = (currentCertificateIndex - 1 + certificates.length) % certificates.length;
+        const cert = certificates[currentCertificateIndex];
+        
+        modalImage.src = cert.image;
+        modalImage.alt = cert.title;
+        modalTitle.textContent = cert.title;
+        modalYear.textContent = cert.year;
+        
+        updateNavigationButtons();
+    }
+
+    function updateNavigationButtons() {
+        // Always show navigation buttons since we have multiple certificates
+        modalPrev.style.display = 'flex';
+        modalNext.style.display = 'flex';
+    }
+
+    // Event listeners for certificate cards
+    certificateCards.forEach((card, index) => {
+        const viewBtn = card.querySelector('.view-certificate-btn');
+        viewBtn.addEventListener('click', () => openModal(index));
+    });
+
+    // Event listeners for modal controls
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', closeModal);
+    modalPrev.addEventListener('click', showPrevCertificate);
+    modalNext.addEventListener('click', showNextCertificate);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('active')) {
+            switch(e.key) {
+                case 'Escape':
+                    closeModal();
+                    break;
+                case 'ArrowLeft':
+                    showPrevCertificate();
+                    break;
+                case 'ArrowRight':
+                    showNextCertificate();
+                    break;
             }
-        });
+        }
+    });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    modal.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    modal.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - show next
+                showNextCertificate();
+            } else {
+                // Swipe right - show previous
+                showPrevCertificate();
+            }
+        }
     }
 
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-    }
-
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        showSlide(currentSlide);
-    }
-
-    // Event listeners
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
-
-    // Auto-advance carousel
-    setInterval(nextSlide, 5000);
-
-    // Initialize first slide
-    showSlide(0);
+    // Prevent modal content clicks from closing modal
+    const modalContent = document.querySelector('.modal-content');
+    modalContent.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 }
 
 // Contact form functionality

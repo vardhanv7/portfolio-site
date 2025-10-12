@@ -876,104 +876,279 @@ body {
 
 /* Certificates Section */
 .certificates {
-    padding: 100px 0;
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    padding: 120px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-}
-
-.certificates-carousel {
     position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.carousel-container {
-    position: relative;
-    height: 400px;
     overflow: hidden;
-    border-radius: 20px;
 }
 
-.certificate-slide {
+.certificates::before {
+    content: '';
     position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transform: translateX(100%);
-    transition: all 0.5s ease;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="certificatesPattern" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="10" cy="50" r="0.5" fill="rgba(255,255,255,0.02)"/></pattern></defs><rect width="100" height="100" fill="url(%23certificatesPattern)"/></svg>');
+    opacity: 0.3;
 }
 
-.certificate-slide.active {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.certificate-slide.prev {
-    transform: translateX(-100%);
+.certificates-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .certificate-card {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    padding: 3rem;
     border-radius: 20px;
-    text-align: center;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 1s ease forwards;
+}
+
+.certificate-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.certificate-card:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.certificate-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.certificate-thumbnail {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.certificate-thumbnail img {
+    width: 100%;
     height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.certificate-card:hover .certificate-thumbnail img {
+    transform: scale(1.05);
+}
+
+.certificate-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.certificate-card:hover .certificate-overlay {
+    opacity: 1;
+}
+
+.view-certificate-btn {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+}
+
+.view-certificate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(78, 205, 196, 0.5);
+    background: linear-gradient(45deg, #44a08d, #4ecdc4);
+}
+
+.view-certificate-btn i {
+    font-size: 1.1rem;
+}
+
+.certificate-info {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.certificate-info h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.4;
+}
+
+.certificate-year {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Certificate Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 0.3s ease;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.certificate-icon {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    color: #4ecdc4;
-}
-
-.certificate-card h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-}
-
-.certificate-card p {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    opacity: 0.9;
-}
-
-.certificate-date {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 600;
-}
-
-.carousel-controls {
+.modal-close {
     position: absolute;
-    top: 50%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    transform: translateY(-50%);
-}
-
-.carousel-btn {
-    background: rgba(255, 255, 255, 0.2);
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.7);
     border: none;
-    width: 50px;
-    height: 50px;
     border-radius: 50%;
     color: white;
     font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.carousel-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.9);
     transform: scale(1.1);
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-prev {
+    left: 15px;
+}
+
+.modal-next {
+    right: 15px;
+}
+
+.modal-nav:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-image-container {
+    position: relative;
+    max-height: 70vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+
+.modal-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.modal-info {
+    padding: 1.5rem;
+    text-align: center;
+    background: white;
+    border-top: 1px solid #eee;
+}
+
+.modal-info h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.modal-info span {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 /* Projects Section */
@@ -1304,6 +1479,26 @@ body {
     }
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hamburger {
@@ -1432,6 +1627,36 @@ body {
         justify-content: center;
         flex-wrap: wrap;
     }
+    
+    .certificates-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .certificate-card {
+        margin: 0 auto;
+        max-width: 400px;
+    }
+    
+    .modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+        margin: 10px;
+    }
+    
+    .modal-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .modal-prev {
+        left: 10px;
+    }
+    
+    .modal-next {
+        right: 10px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1509,5 +1734,48 @@ body {
     .btn {
         padding: 10px 20px;
         font-size: 0.9rem;
+    }
+    
+    .certificate-thumbnail {
+        height: 200px;
+    }
+    
+    .certificate-info {
+        padding: 1rem;
+    }
+    
+    .certificate-info h3 {
+        font-size: 1.1rem;
+    }
+    
+    .view-certificate-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .modal-content {
+        max-width: 98vw;
+        max-height: 98vh;
+        margin: 5px;
+    }
+    
+    .modal-image-container {
+        max-height: 60vh;
+    }
+    
+    .modal-info {
+        padding: 1rem;
+    }
+    
+    .modal-info h3 {
+        font-size: 1.2rem;
+    }
+    
+    .modal-close {
+        width: 35px;
+        height: 35px;
+        top: 10px;
+        right: 10px;
+        font-size: 1rem;
     }
 }

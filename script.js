@@ -318,31 +318,46 @@ function initCertificatesModal() {
 // Contact form functionality
 function initContactForm() {
     const form = document.getElementById('contactForm');
+    const statusEl = document.getElementById('contactStatus');
     
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Get form data
         const formData = new FormData(form);
         const name = formData.get('name');
         const email = formData.get('email');
-        const subject = formData.get('subject');
         const message = formData.get('message');
         
-        // Basic validation
-        if (!name || !email || !subject || !message) {
+        if (!name || !email || !message) {
             showNotification('Please fill in all fields', 'error');
             return;
         }
-        
         if (!isValidEmail(email)) {
             showNotification('Please enter a valid email address', 'error');
             return;
         }
-        
-        // Simulate form submission
-        showNotification('Thank you! Your message has been sent successfully.', 'success');
-        form.reset();
+
+        // UI: indicate sending
+        setStatus(statusEl, 'Sending...', 'loading');
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: formData
+            });
+
+            if (response.ok) {
+                form.reset();
+                setStatus(statusEl, 'Thank you, your message has been sent!', 'success');
+            } else {
+                const data = await response.json().catch(() => ({}));
+                const err = data && data.errors && data.errors.length ? data.errors.map(e => e.message).join(', ') : 'Something went wrong. Please try again later.';
+                setStatus(statusEl, err, 'error');
+            }
+        } catch (err) {
+            setStatus(statusEl, 'Network error. Please try again later.', 'error');
+        }
     });
     
     // Real-time validation
@@ -351,11 +366,25 @@ function initContactForm() {
         input.addEventListener('blur', function() {
             validateField(this);
         });
-        
         input.addEventListener('input', function() {
             clearFieldError(this);
+            clearStatus(statusEl);
         });
     });
+}
+
+function setStatus(el, message, type) {
+    if (!el) return;
+    el.style.display = 'block';
+    el.textContent = message;
+    el.className = `contact-status contact-status-${type}`;
+}
+
+function clearStatus(el) {
+    if (!el) return;
+    el.style.display = 'none';
+    el.textContent = '';
+    el.className = 'contact-status';
 }
 
 // Email validation

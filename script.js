@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality
     initNavigation();
     initTypingAnimation();
+    initNameTypingAnimation();
     initScrollAnimations();
     initSkillBars();
     initCertificatesModal();
@@ -121,6 +122,35 @@ function initTypingAnimation() {
 
     // Start typing animation after a delay
     setTimeout(typeRole, 2000);
+}
+
+// Name typing animation - plays once per page load/reload
+function initNameTypingAnimation() {
+    const nameElement = document.getElementById('typing-name');
+    
+    if (!nameElement) return;
+    
+    // Clear any previous content
+    nameElement.textContent = '';
+    nameElement.classList.remove('typing-complete');
+    
+    const fullName = 'VUPPALA ANAND VARDHAN';
+    let charIndex = 0;
+    const typeSpeed = 100; // milliseconds per character
+    
+    function typeName() {
+        if (charIndex < fullName.length) {
+            nameElement.textContent = fullName.substring(0, charIndex + 1);
+            charIndex++;
+            setTimeout(typeName, typeSpeed);
+        } else {
+            // Animation complete - hide cursor
+            nameElement.classList.add('typing-complete');
+        }
+    }
+    
+    // Start typing animation after a short delay
+    setTimeout(typeName, 800);
 }
 
 // Scroll animations

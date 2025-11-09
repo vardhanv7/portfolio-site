@@ -160,16 +160,26 @@ body {
 }
 
 .highlight {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #a8edea);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
-    font-weight: 800;
-    letter-spacing: 2px;
+    color: #ff8c42;
+    text-shadow: 0 2px 8px rgba(255, 140, 66, 0.4), 0 0 20px rgba(255, 140, 66, 0.2);
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 0.75em;
     text-transform: uppercase;
-    display: block;
-    margin-top: 0.5rem;
+    display: inline-block;
+    position: relative;
+}
+
+.highlight::after {
+    content: '|';
+    color: #ff8c42;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+    font-weight: 400;
+}
+
+.highlight.typing-complete::after {
+    display: none;
 }
 
 .dynamic-role {
@@ -1638,8 +1648,8 @@ body {
     }
     
     .highlight {
-        font-size: 2rem;
-        letter-spacing: 1px;
+        font-size: 0.75em;
+        letter-spacing: 0.5px;
     }
     
     .dynamic-role {
@@ -1783,8 +1793,8 @@ body {
     }
     
     .highlight {
-        font-size: 1.8rem;
-        letter-spacing: 1px;
+        font-size: 0.75em;
+        letter-spacing: 0.5px;
     }
     
     .dynamic-role {

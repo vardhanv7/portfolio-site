@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initNameTypingAnimation();
     initScrollAnimations();
     initSkillBars();
-    initCertificatesModal();
     initContactForm();
     initSmoothScrolling();
 });
@@ -78,11 +77,10 @@ function initNavigation() {
 // Typing animation for dynamic role
 function initTypingAnimation() {
     const roles = [
-        'Student',
-        'Web Developer',
         'AI Enthusiast',
-        'GAMER',
-        'VIDEO GRAPHER'
+        'Web Developer',
+        'ServiceNow Administrator',
+        'Tech Explorer'
     ];
     
     let roleIndex = 0;
@@ -197,153 +195,6 @@ function initSkillBars() {
     });
 }
 
-// Certificates Modal functionality
-function initCertificatesModal() {
-    const modal = document.getElementById('certificateModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalYear = document.getElementById('modalYear');
-    const modalClose = document.getElementById('modalClose');
-    const modalPrev = document.getElementById('modalPrev');
-    const modalNext = document.getElementById('modalNext');
-    const modalOverlay = document.querySelector('.modal-overlay');
-    
-    const certificateCards = document.querySelectorAll('.certificate-card');
-    let currentCertificateIndex = 0;
-    
-    // Certificate data
-    const certificates = [
-        {
-            image: 'Certificates/ServiceNow_Administrator.jpg',
-            title: 'ServiceNow Certified System Administrator',
-            year: '2025'
-        },
-        {
-            image: 'Certificates/Power_BI.jpg',
-            title: 'Power BI Foundations',
-            year: '2024'
-        },
-        {
-            image: 'Certificates/Python.jpg',
-            title: 'Python for Everybody',
-            year: '2023'
-        }
-    ];
-
-    function openModal(index) {
-        currentCertificateIndex = index;
-        const cert = certificates[index];
-        
-        modalImage.src = cert.image;
-        modalImage.alt = cert.title;
-        modalTitle.textContent = cert.title;
-        modalYear.textContent = cert.year;
-        
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        
-        // Update navigation buttons visibility
-        updateNavigationButtons();
-    }
-
-    function closeModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-
-    function showNextCertificate() {
-        currentCertificateIndex = (currentCertificateIndex + 1) % certificates.length;
-        const cert = certificates[currentCertificateIndex];
-        
-        modalImage.src = cert.image;
-        modalImage.alt = cert.title;
-        modalTitle.textContent = cert.title;
-        modalYear.textContent = cert.year;
-        
-        updateNavigationButtons();
-    }
-
-    function showPrevCertificate() {
-        currentCertificateIndex = (currentCertificateIndex - 1 + certificates.length) % certificates.length;
-        const cert = certificates[currentCertificateIndex];
-        
-        modalImage.src = cert.image;
-        modalImage.alt = cert.title;
-        modalTitle.textContent = cert.title;
-        modalYear.textContent = cert.year;
-        
-        updateNavigationButtons();
-    }
-
-    function updateNavigationButtons() {
-        // Always show navigation buttons since we have multiple certificates
-        modalPrev.style.display = 'flex';
-        modalNext.style.display = 'flex';
-    }
-
-    // Event listeners for certificate cards
-    certificateCards.forEach((card, index) => {
-        const viewBtn = card.querySelector('.view-certificate-btn');
-        viewBtn.addEventListener('click', () => openModal(index));
-    });
-
-    // Event listeners for modal controls
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', closeModal);
-    modalPrev.addEventListener('click', showPrevCertificate);
-    modalNext.addEventListener('click', showNextCertificate);
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('active')) {
-            switch(e.key) {
-                case 'Escape':
-                    closeModal();
-                    break;
-                case 'ArrowLeft':
-                    showPrevCertificate();
-                    break;
-                case 'ArrowRight':
-                    showNextCertificate();
-                    break;
-            }
-        }
-    });
-
-    // Touch/swipe support for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    modal.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-
-    modal.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-
-    function handleSwipe() {
-        const swipeThreshold = 50;
-        const diff = touchStartX - touchEndX;
-        
-        if (Math.abs(diff) > swipeThreshold) {
-            if (diff > 0) {
-                // Swipe left - show next
-                showNextCertificate();
-            } else {
-                // Swipe right - show previous
-                showPrevCertificate();
-            }
-        }
-    }
-
-    // Prevent modal content clicks from closing modal
-    const modalContent = document.querySelector('.modal-content');
-    modalContent.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-}
 
 // Contact form functionality
 function initContactForm() {
@@ -445,7 +296,7 @@ function validateField(field) {
 
 // Show field error
 function showFieldError(field, message) {
-    field.style.borderColor = '#ff6b6b';
+    field.style.borderColor = '#ef4444';
     
     // Remove existing error message
     const existingError = field.parentNode.querySelector('.error-message');
@@ -456,7 +307,7 @@ function showFieldError(field, message) {
     // Add error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
-    errorDiv.style.color = '#ff6b6b';
+    errorDiv.style.color = '#ef4444';
     errorDiv.style.fontSize = '0.8rem';
     errorDiv.style.marginTop = '0.5rem';
     errorDiv.textContent = message;
@@ -465,7 +316,7 @@ function showFieldError(field, message) {
 
 // Clear field error
 function clearFieldError(field) {
-    field.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+    field.style.borderColor = 'rgba(255, 255, 255, 0.08)';
     const errorMessage = field.parentNode.querySelector('.error-message');
     if (errorMessage) {
         errorMessage.remove();
@@ -499,9 +350,9 @@ function showNotification(message, type) {
     `;
     
     if (type === 'success') {
-        notification.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+        notification.style.background = '#3b82f6';
     } else {
-        notification.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a24)';
+        notification.style.background = '#ef4444';
     }
     
     notification.textContent = message;
@@ -605,7 +456,7 @@ function createScrollProgress() {
         left: 0;
         width: 0%;
         height: 3px;
-        background: linear-gradient(90deg, #667eea, #764ba2);
+        background: #3b82f6;
         z-index: 10001;
         transition: width 0.1s ease;
     `;
